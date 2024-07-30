@@ -1,6 +1,8 @@
 package dk.dinero.decoroutinatorapplication
 
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dk.dinero.decoroutinatorapplication.ui.theme.DecoroutinatorApplicationTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +31,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Handler().postDelayed({
+            CoroutineScope(Dispatchers.IO).launch {
+                Log.i("decoroutinator", "decoroutinator coroutines works")
+            }
+        }, 100)
     }
 }
 

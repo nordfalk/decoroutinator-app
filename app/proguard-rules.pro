@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class kotlin.** { *; }
+-keep class dev.reformator.stacktracedecoroutinator.** { *; }
+-keep @kotlin.coroutines.jvm.internal.DebugMetadata class * { *; }
