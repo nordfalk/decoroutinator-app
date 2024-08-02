@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import dk.dinero.decoroutinatorapplication.ui.theme.DecoroutinatorApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -37,9 +38,29 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         Handler().postDelayed({
             CoroutineScope(Dispatchers.IO).launch {
-                Log.i("decoroutinator", "decoroutinator coroutines works")
+                coroutineCheck1()
             }
         }, 100)
+    }
+
+    private suspend fun coroutineCheck1() {
+        delay(100)
+        coroutineCheck2()
+        delay(100)
+    }
+
+
+    private suspend fun coroutineCheck2() {
+        delay(100)
+        coroutineCheck3()
+        delay(100)
+    }
+
+
+    private suspend fun coroutineCheck3() {
+        delay(100)
+        Log.i("decoroutinator", "coroutines didnt crash")
+        Log.w("decoroutinator", Exception("coroutines stack trace"))
     }
 }
 
