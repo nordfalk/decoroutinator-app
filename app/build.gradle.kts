@@ -1,27 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("dev.reformator.stacktracedecoroutinator") version "2.4.0-SNAPSHOT"
-    /*
-11:12:34.409 coroutines didnt crash
-11:12:34.410 java.lang.Exception: coroutines stack trace
-             	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck3(MainActivity.kt:63)
-             	at dk.dinero.decoroutinatorapplication.MainActivity.access$coroutineCheck3(MainActivity.kt:21)
-             	at dk.dinero.decoroutinatorapplication.MainActivity$coroutineCheck3$1.invokeSuspend(Unknown Source:14)
-             	at kotlin.coroutines.jvm.internal.JavaUtilsImpl$1.apply(JavaUtilsImpl.java:52)
-             	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck2(MainActivity.kt:55)
-             	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck1(MainActivity.kt:48)
-             	at dk.dinero.decoroutinatorapplication.MainActivity$onResume$1$1.invokeSuspend(MainActivity.kt:41)
-             	at dev.reformator.stacktracedecoroutinator.runtime.AwakenerKt.awake(awakener.kt:93)
-             	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(basecontinuation.kt:20)
-             	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
-             	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
-             	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
-             	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
-             	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
-             	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
-             	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
-     */
+    id("dev.reformator.stacktracedecoroutinator") version "2.4.3"
 }
 
 android {
@@ -48,6 +28,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -87,28 +68,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    // implementation("dev.reformator.stacktracedecoroutinator:stacktrace-decoroutinator-android:2.3.9")
-    /*
-11:11:13.522 coroutines didnt crash
-11:11:13.523 java.lang.Exception: coroutines stack trace
-             	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck3(MainActivity.kt:63)
-             	at dk.dinero.decoroutinatorapplication.MainActivity.access$coroutineCheck3(MainActivity.kt:21)
-             	at dk.dinero.decoroutinatorapplication.MainActivity$coroutineCheck3$1.invokeSuspend(Unknown Source:14)
-             	at dev.reformator.stacktracedecoroutinator.stdlib.StdlibKt.decoroutinatorResumeWith$lambda$1(stdlib.kt:38)
-             	at dev.reformator.stacktracedecoroutinator.stdlib.StdlibKt.$r8$lambda$Fy3lawHb76gebo-pxlkCIn-s7Ng(Unknown Source:0)
-             	at dev.reformator.stacktracedecoroutinator.stdlib.StdlibKt$$ExternalSyntheticLambda0.apply(Unknown Source:12)
-             	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck2(MainActivity.kt:55)
-             	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck1(MainActivity.kt:48)
-             	at dk.dinero.decoroutinatorapplication.MainActivity$onResume$1$1.invokeSuspend(MainActivity.kt:41)
-             	at dev.reformator.stacktracedecoroutinator.stdlib.StdlibKt.decoroutinatorResumeWith(stdlib.kt:114)
-             	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(continuation-stdlib.kt:31)
-             	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
-             	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
-             	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
-             	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
-             	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
-             	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
-             	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
-     */
 }

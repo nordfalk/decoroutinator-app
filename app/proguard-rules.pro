@@ -20,6 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class kotlin.** { *; }
--keep class dev.reformator.stacktracedecoroutinator.** { *; }
 -keep @kotlin.coroutines.jvm.internal.DebugMetadata class * { *; }
+-keep @dev.reformator.stacktracedecoroutinator.provider.DecoroutinatorTransformed class * { *; }
