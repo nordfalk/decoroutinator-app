@@ -5,11 +5,17 @@ import android.os.Handler
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dev.reformator.stacktracedecoroutinator.common.DecoroutinatorCommonApi
@@ -65,62 +71,24 @@ class MainActivity : ComponentActivity() {
         val status = DecoroutinatorCommonApi.getStatus { it() }
         Log.i("decoroutinator", "DecoroutinatorCommonApi status: $status")
     }
-/* debug build output:
-coroutines didnt crash
-java.lang.Exception: coroutines stack trace
-	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck3(MainActivity.kt:64)
-	at dk.dinero.decoroutinatorapplication.MainActivity.access$coroutineCheck3(MainActivity.kt:22)
-	at dk.dinero.decoroutinatorapplication.MainActivity$coroutineCheck3$1.invokeSuspend(Unknown Source:14)
-	at dev.reformator.stacktracedecoroutinator.common.internal.DecoroutinatorSpecImpl.resumeNext(utils-common.kt:126)
-	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck2(MainActivity.kt:56)
-	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck1(MainActivity.kt:49)
-	at dk.dinero.decoroutinatorapplication.MainActivity$onResume$1$1.invokeSuspend(MainActivity.kt:42)
-	at dev.reformator.stacktracedecoroutinator.common.internal.AwakenerKt.callSpecMethods(awakener.kt:80)
-	at dev.reformator.stacktracedecoroutinator.common.internal.AwakenerKt.awake(awakener.kt:32)
-	at dev.reformator.stacktracedecoroutinator.common.internal.Provider.awakeBaseContinuation(provider-impl.kt:38)
-	at dev.reformator.stacktracedecoroutinator.provider.DecoroutinatorProviderApiKt.awakeBaseContinuation(provider-api.kt:48)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(Unknown Source:20)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
-	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
-	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
-DecoroutinatorCommonApi.getStatus: DecoroutinatorStatus(successful=true, description=no issues detected)
-
-
-
-production build output:
-java.lang.Exception: coroutines stack trace
-	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck3(MainActivity.kt:64)
-	at dk.dinero.decoroutinatorapplication.MainActivity.access$coroutineCheck3(MainActivity.kt:22)
-	at dk.dinero.decoroutinatorapplication.MainActivity$coroutineCheck3$1.invokeSuspend(Unknown Source:14)
-	at dev.reformator.stacktracedecoroutinator.common.internal.DecoroutinatorSpecImpl.resumeNext(utils-common.kt:126)
-	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck2(MainActivity.kt:56)
-	at dk.dinero.decoroutinatorapplication.MainActivity.coroutineCheck1(MainActivity.kt:49)
-	at dk.dinero.decoroutinatorapplication.MainActivity$onResume$1$1.invokeSuspend(MainActivity.kt:42)
-	at dev.reformator.stacktracedecoroutinator.common.internal.AwakenerKt.callSpecMethods(awakener.kt:80)
-	at dev.reformator.stacktracedecoroutinator.common.internal.AwakenerKt.awake(awakener.kt:32)
-	at dev.reformator.stacktracedecoroutinator.common.internal.Provider.awakeBaseContinuation(provider-impl.kt:38)
-	at dev.reformator.stacktracedecoroutinator.provider.DecoroutinatorProviderApiKt.awakeBaseContinuation(provider-api.kt:48)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(Unknown Source:20)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
-	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
-	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
-	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
-DecoroutinatorCommonApi.getStatus: DecoroutinatorStatus(successful=true, description=no issues detected)
- */
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val running = remember { mutableStateOf(false) }
+
     Text(
-        text = "Hello $name!",
-        modifier = modifier
+        text = "Hello $name! "+running.value,
+        modifier = modifier.clickable {
+            runBg(coroutineScope, running) {
+                Log.i("decoroutinator", "runBg coroutine started")
+                delay(1000)
+                Log.i("decoroutinator", "runBg coroutine finished")
+            }
+            Log.i("decoroutinator", "clickable text clicked")
+        }
     )
 }
 
@@ -129,5 +97,40 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     DecoroutinatorApplicationTheme {
         Greeting("Android")
+    }
+}
+
+
+fun runBg(
+    coroutineScope: CoroutineScope,
+    running: MutableState<Boolean>? = null,
+    function: suspend () -> Unit
+) {
+    if (running != null) running.value = true
+    coroutineScope.launch {
+        try {
+            function()
+        } catch (e: Exception) {
+            Log.e("decoroutinator", "runBg error", e)
+        } finally {
+            if (running != null) running.value = false
+        }
+    }
+}
+
+@Composable
+fun RunBgLaunchedEffect(
+    key1: Any?,
+    loading: MutableState<Boolean>? = null,
+    block: suspend CoroutineScope.() -> Unit
+) {
+    LaunchedEffect(key1) {
+        try {
+            block()
+        } catch (e: Exception) {
+            Log.e("decoroutinator", "RunBgLaunchedEffect error", e)
+        } finally {
+            loading?.value = false
+        }
     }
 }

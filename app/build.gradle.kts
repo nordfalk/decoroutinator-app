@@ -1,8 +1,15 @@
 plugins {
+    id("dev.reformator.stacktracedecoroutinator") version "2.4.4"
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("dev.reformator.stacktracedecoroutinator") version "2.4.3"
 }
+/*
+    id("com.google.gms.google-services")
+    id("com.datadoghq.dd-sdk-android-gradle-plugin")
+datadog {
+    site = "EU"
+    serviceName = "dinero.app.android" // MUST be equal to serviceName given in Datadog initialization for stacktrace deobfuscation to work - Datadog.initialize(ctx, Credentials(clientToken, envName, variant, applicationId, "dinero.app.android"),...
+}*/
 
 android {
     namespace = "dk.dinero.decoroutinatorapplication"
